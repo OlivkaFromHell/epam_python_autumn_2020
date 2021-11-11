@@ -2,15 +2,18 @@
 Classic task, a kind of walnut for you
 
 Given four lists A, B, C, D of integer values,
-    compute how many tuples (i, j, k, l) there are such that A[i] + B[j] + C[k] + D[l] is zero.
+    compute how many tuples (i, j, k, l) there are such that
+    A[i] + B[j] + C[k] + D[l] is zero.
 
 We guarantee, that all A, B, C, D have same length of N where 0 ≤ N ≤ 1000.
 """
 from typing import List
 
 
-def check_sum_of_four(a: List[int], b: List[int], c: List[int], d: List[int]) -> int:
-    """Return how many tuples (i, j, k, l) there are such that A[i] + B[j] + C[k] + D[l] is zero."""
+def check_sum_of_four(
+        a: List[int], b: List[int], c: List[int], d: List[int]) -> int:
+    """Return how many tuples (i, j, k, l) there are such that
+    A[i] + B[j] + C[k] + D[l] is zero."""
 
     amount = 0
 
@@ -20,7 +23,6 @@ def check_sum_of_four(a: List[int], b: List[int], c: List[int], d: List[int]) ->
     sublist_ab.sort()
     sublist_cd = [i + j for i in c for j in d]  # ... in list c and d
     sublist_cd.sort()
-    print(sublist_ab, "\n", sublist_cd)
 
     len_arr = len(sublist_ab)  # initiliaze the array's size
     i = 0
