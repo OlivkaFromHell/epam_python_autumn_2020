@@ -27,4 +27,4 @@ def find_maximum_and_minimum(file_name: str) -> Tuple[int, int]:
             if number < min_num:
                 min_num = number
 
-    return tuple((min_num, max_num))
+    return min_num, max_num

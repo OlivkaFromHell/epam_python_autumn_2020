@@ -19,13 +19,13 @@ data_negative = [
 ]
 
 
-@pytest.mark.parametrize("test_input", [*data_positive])
+@pytest.mark.parametrize("test_input", data_positive)
 def test_positive_case(test_input):
     """Testing that correct list gives True"""
     assert check_fibonacci(test_input)
 
 
-@pytest.mark.parametrize("test_input", [*data_negative])
+@pytest.mark.parametrize("test_input", data_negative)
 def test_negative_case(test_input):
     """Testing that wrong list gives False"""
     assert not check_fibonacci(test_input)
