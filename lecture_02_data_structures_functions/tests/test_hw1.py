@@ -1,5 +1,4 @@
 import pytest
-
 from hw.hw1 import (count_non_ascii_chars, count_punctuation_chars,
                     get_longest_diverse_words, get_most_common_non_ascii_char,
                     get_rarest_char)
@@ -20,10 +19,10 @@ def test_longest_diverse_words(filepath, longest_diverse_words):
 
 
 @pytest.mark.parametrize('filepath,rarest_char', [
-    ('test_files_hw1/test_data1.txt', '!'),
-    ('test_files_hw1/test_data2.txt', '\n'),
-    ('test_files_hw1/test_data3.txt', 'd'),
-    ('test_files_hw1/test_data4.txt', 'M'),
+    ('test_files_hw1/test_data1.txt', '\''),
+    ('test_files_hw1/test_data2.txt', '-'),
+    ('test_files_hw1/test_data3.txt', ','),
+    ('test_files_hw1/test_data4.txt', ','),
 ])
 def test_rarest_char(filepath, rarest_char):
     assert get_rarest_char(filepath) == rarest_char
