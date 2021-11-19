@@ -30,6 +30,7 @@ from typing import Callable
 
 
 def cache(times: int) -> Callable:
+    """Cache decorator which returns func result n times"""
     def _cache(func: Callable) -> Callable:
         output = None
         counter_times = times
