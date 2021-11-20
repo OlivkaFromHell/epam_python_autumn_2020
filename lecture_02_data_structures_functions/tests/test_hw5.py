@@ -1,7 +1,6 @@
 import string
 
 import pytest
-
 from hw.hw5 import custom_range
 
 

@@ -1,5 +1,4 @@
 import pytest
-
 from hw.hw2 import major_and_minor_elem
 
 
