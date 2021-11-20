@@ -53,3 +53,8 @@ def test_no_stop_case(arr, start, result):
 def test_step_case(arr, start, stop, step, result):
     """Checks that functions works with list and givel step size"""
     assert custom_range(arr, start, stop, step) == result
+
+
+def test_negative_case():
+    """return [] if start element doesn't exist in array"""
+    assert custom_range([1, 2, 3], -1) == []

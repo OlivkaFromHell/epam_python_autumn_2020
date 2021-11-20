@@ -18,9 +18,13 @@ from typing import Any, Iterable, List
 
 
 def custom_range(arr: Iterable[Any], start: Any, stop: Any = None, step: int = 1) -> List:
-    # TODO: rewrite code with generators
+    """Return blank list if start element isn't in arr"""
     arr = list(arr)
-    ind_start = arr.index(start)
+    try:
+        ind_start = arr.index(start)
+    except ValueError:
+        return []
+
     if not stop:
         return arr[:ind_start]
     else:

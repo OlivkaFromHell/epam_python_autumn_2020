@@ -24,12 +24,10 @@ from typing import List, Tuple
 def major_and_minor_elem(inp: List) -> Tuple[int, int]:
     """Return  most common element is the element that appears more than n // 2 times
     and the least common element"""
+    count_elements = Counter(inp).most_common()
     most_common_elem, least_common_elem = (
-        Counter(inp).most_common()[0],
-        Counter(inp).most_common()[-1],
+        count_elements[0][0],
+        count_elements[-1][0],
     )
 
-    if most_common_elem[1] <= len(inp) // 2:
-        raise ValueError("Most common element appears less than n // 2 times ")
-
-    return most_common_elem[0], least_common_elem[0]
+    return most_common_elem, least_common_elem
