@@ -40,6 +40,42 @@ PEP8 соблюдать строго.
 import datetime
 
 
+class Homework:
+
+    def __init__(self, text: str, days: int):
+        self.text = text
+        self.deadline = datetime.timedelta(days=days)
+        self.created = datetime.datetime.now()
+
+    def is_active(self) -> bool:
+        return datetime.datetime.now() - self.deadline < self.created
+
+
+class Student:
+
+    def __init__(self, first_name, last_name):
+        self.first_name = first_name
+        self.last_name = last_name
+
+    @staticmethod
+    def do_homework(homework: Homework):
+        if homework.is_active():
+            return homework
+        print('You are late')
+        return None
+
+
+class Teacher:
+
+    def __init__(self, first_name, last_name):
+        self.first_name = first_name
+        self.last_name = last_name
+
+    @staticmethod
+    def create_homework(task: str, days: int) -> Homework:
+        return Homework(task, days)
+
+
 if __name__ == '__main__':
     teacher = Teacher('Daniil', 'Shadrin')
     student = Student('Roman', 'Petrov')
