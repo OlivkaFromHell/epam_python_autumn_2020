@@ -12,14 +12,33 @@ Definition of done:
  - function has tests
 
 
->>> list(fizzbuzz(5))
+# >>> list(fizzbuzz(5))
 ["1", "2", "fizz", "4", "buzz"]
 
 * https://en.wikipedia.org/wiki/Fizz_buzz
 ** https://www.youtube.com/watch?v=NSzsYWckGd4
 """
-from typing import List, Generator
+# from typing import Generator
 
 
-def fizzbuzz(n: int) -> Generator[str]:
-    pass
+def fizzbuzz(n: int):
+    """
+    Generate n FizzBuzz numbers
+
+    >>> list(fizzbuzz(5))
+    ['1', '2', 'fizz', '4', 'buzz']
+    """
+
+    for i in range(1, n + 1):
+        if i % 15 == 0:
+            yield 'fizz buzz'
+        elif i % 3 == 0:
+            yield 'fizz'
+        elif i % 5 == 0:
+            yield 'buzz'
+        else:
+            yield str(i)
+
+
+if __name__ == '__main__':
+    print(list(fizzbuzz(25)))
