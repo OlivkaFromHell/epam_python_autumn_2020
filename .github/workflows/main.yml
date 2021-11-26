@@ -15,6 +15,6 @@ jobs:
         uses: actions/checkout@v2
       - name: Run script
         run: |
-          pip install flake8 isort pytest
+          pip install pytest
           ls -la
           py.test */tests
