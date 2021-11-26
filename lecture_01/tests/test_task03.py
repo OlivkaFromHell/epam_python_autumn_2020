@@ -1,5 +1,9 @@
+import os
+
 import pytest
 from hw.task03 import find_maximum_and_minimum
+
+cwd = os.path.dirname(os.path.realpath(__file__)) + '/'
 
 
 @pytest.mark.parametrize(
@@ -12,4 +16,4 @@ from hw.task03 import find_maximum_and_minimum
 )
 def test_positive_case_1(test_input, result):
     """Testing that actual powers of 2 give True"""
-    assert find_maximum_and_minimum(test_input) == result
+    assert find_maximum_and_minimum(cwd+test_input) == result
