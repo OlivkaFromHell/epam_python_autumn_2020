@@ -37,4 +37,3 @@ def test_original_func():
 
     without_add_1 = custom_sum.__original_func
     assert without_add_1(1, 2, 3, 4) + 1 == custom_sum(1, 2, 3, 4)
-

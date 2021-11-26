@@ -18,7 +18,7 @@ def test_homework(time):
 
 
 @pytest.mark.parametrize('time', [2, 5, 10, 100])
-def test_homework(time):
+def test_homework_is_active(time):
     homework = Mock()
     homework.text = 'oop'
     homework.deadline = datetime.timedelta(days=time)
