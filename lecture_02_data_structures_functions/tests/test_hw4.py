@@ -41,3 +41,27 @@ def test_positive_case3():
     val_2 = cache_func(*some)
 
     assert val_1 is val_2
+
+
+def test_args_order():
+    def func(a: int, b: int):
+        return a - b
+
+    cache_func = cache(func)
+
+    val_1 = cache_func(3, 2)
+    val_2 = cache_func(2, 3)
+
+    assert val_1 is not val_2
+
+
+def test_args_name():
+    def func(a: str, b: str):
+        return a + b
+
+    cache_func = cache(func)
+
+    val_1 = cache_func('2', b='\'b\'')
+    val_2 = cache_func(a='2', b='\'b\'')
+
+    assert val_1 is not val_2

@@ -28,5 +28,8 @@ def custom_range(arr: Iterable[Any], start: Any, stop: Any = None, step: int = 1
     if not stop:
         return arr[:ind_start]
     else:
-        ind_stop = arr.index(stop)
+        try:
+            ind_stop = arr.index(stop)
+        except ValueError:
+            return []
         return arr[ind_start:ind_stop:step]

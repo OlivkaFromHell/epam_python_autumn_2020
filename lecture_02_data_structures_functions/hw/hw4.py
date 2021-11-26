@@ -25,12 +25,11 @@ def cache(func: Callable) -> Callable:
     cached_values = {}
 
     def wrapper(*args, **kwargs):
-        key = f"{sorted(args)} {sorted(kwargs.items())}"
+        key = f"{args} {sorted(kwargs.items())}"
+        print(key)
+        if key not in cached_values:
+            cached_values[key] = func(*args, **kwargs)
 
-        if key in cached_values:
-            return cached_values[key]
-
-        cached_values[key] = func(*args, **kwargs)
         return cached_values[key]
 
     return wrapper
