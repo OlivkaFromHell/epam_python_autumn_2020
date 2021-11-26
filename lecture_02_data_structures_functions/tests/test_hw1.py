@@ -1,12 +1,16 @@
+import os
+
 import pytest
 from hw.hw1 import (count_non_ascii_chars, count_punctuation_chars,
                     get_longest_diverse_words, get_most_common_non_ascii_char,
                     get_rarest_char)
 
+cwd = os.path.dirname(os.path.realpath(__file__)) + '/'
+
 
 @pytest.mark.parametrize('filepath,longest_diverse_words', [
     ('test_files_hw1/test_data1.txt', ['Mario', 'It\'s', 'Me']),
-    ('test_files_hw1/test_data2.txt', ['aaaaaa']),
+    ('test_files_hw1/test_data2.txt', ['aaa', 'aaaaaa']),
     ('test_files_hw1/test_data3.txt', ['complicated', 'Beautiful', 'Explicit',
                                        'complex', 'Complex', 'Python', 'implicit',
                                        'Simple', 'Peters', 'better']),
@@ -15,7 +19,7 @@ from hw.hw1 import (count_non_ascii_chars, count_punctuation_chars,
                                        'tempor', 'Lorem', 'ipsum', 'Fusce']),
 ])
 def test_longest_diverse_words(filepath, longest_diverse_words):
-    assert get_longest_diverse_words(filepath) == longest_diverse_words
+    assert get_longest_diverse_words(cwd+filepath) == longest_diverse_words
 
 
 @pytest.mark.parametrize('filepath,rarest_char', [
@@ -25,7 +29,7 @@ def test_longest_diverse_words(filepath, longest_diverse_words):
     ('test_files_hw1/test_data4.txt', 'L'),
 ])
 def test_rarest_char(filepath, rarest_char):
-    assert get_rarest_char(filepath) == rarest_char
+    assert get_rarest_char(cwd+filepath) == rarest_char
 
 
 @pytest.mark.parametrize('filepath,punctuation_chars_amount', [
@@ -35,7 +39,7 @@ def test_rarest_char(filepath, rarest_char):
     ('test_files_hw1/test_data4.txt', 7),
 ])
 def test_count_punctuation_chars(filepath, punctuation_chars_amount):
-    assert count_punctuation_chars(filepath) == punctuation_chars_amount
+    assert count_punctuation_chars(cwd+filepath) == punctuation_chars_amount
 
 
 @pytest.mark.parametrize('filepath,non_ascii_amount', [
@@ -46,7 +50,7 @@ def test_count_punctuation_chars(filepath, punctuation_chars_amount):
     ('test_files_hw1/test_data5.txt', 2),
 ])
 def test_count_non_ascii_chars(filepath, non_ascii_amount):
-    assert count_non_ascii_chars(filepath) == non_ascii_amount
+    assert count_non_ascii_chars(cwd+filepath) == non_ascii_amount
 
 
 @pytest.mark.parametrize('filepath,most_common_non_ascii_char', [
@@ -57,4 +61,4 @@ def test_count_non_ascii_chars(filepath, non_ascii_amount):
     ('test_files_hw1/test_data5.txt', '»'),
 ])
 def test_get_most_common_non_ascii_char(filepath, most_common_non_ascii_char):
-    assert get_most_common_non_ascii_char(filepath) == most_common_non_ascii_char
+    assert get_most_common_non_ascii_char(cwd+filepath) == most_common_non_ascii_char
