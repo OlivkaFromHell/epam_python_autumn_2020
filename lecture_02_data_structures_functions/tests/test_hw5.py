@@ -54,6 +54,16 @@ def test_step_case(arr, start, stop, step, result):
     assert custom_range(arr, start, stop, step) == result
 
 
-def test_negative_case():
+def test_big_step():
+    """return [] if start element doesn't exist in array"""
+    assert custom_range([1, 2, 3], 1, 3, 100) == [1]
+
+
+def test_wrong_start_elem():
     """return [] if start element doesn't exist in array"""
     assert custom_range([1, 2, 3], -1) == []
+
+
+def test_wrong_stop_elem():
+    """return [] if start element doesn't exist in array"""
+    assert custom_range([1, 2, 3], 1, -4) == []
