@@ -17,4 +17,4 @@ jobs:
         run: |
           pip install flake8 isort pytest
           ls -la
-          py.test */tests
+          py.test */tests */*/tests
