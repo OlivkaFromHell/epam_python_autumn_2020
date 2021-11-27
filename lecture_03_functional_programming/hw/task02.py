@@ -34,7 +34,7 @@ def slow_calculate(value):
 def calculate_0_500():
     start_time = time.time()
     with multiprocessing.Pool(60) as p:
-        all_calculations = p.map(slow_calculate, [i for i in range(501)])
+        all_calculations = p.map(slow_calculate, range(501))
 
     summary = sum(all_calculations)
     end_time = time.time()

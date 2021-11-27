@@ -26,31 +26,31 @@ Example::
     '2'
 """
 
+import inspect
 from typing import Callable
 
 
 def cache(times: int) -> Callable:
     """Cache decorator which returns func result n times"""
+    cached_values = {}
+
     def _cache(func: Callable) -> Callable:
-        output = None
-        counter_times = times
 
         def wrapper(*args, **kwargs):
-            nonlocal counter_times, output
+            bound = inspect.signature(func).bind(*args, **kwargs)
+            bound.apply_defaults()
+            key = str(bound.arguments)
 
-            if counter_times == times:
-                counter_times = times - 1
-                output = func(*args, **kwargs)
-                return output
+            if key not in cached_values:
+                cached_values[key] = [func(*args, **kwargs), times+1]
 
-            if counter_times == -1:
-                counter_times = times - 1
-                output = func(*args, **kwargs)
-                return output
+            if cached_values[key][1] > 1:
+                cached_values[key][1] -= 1
+                return cached_values[key][0]
 
-            if counter_times >= 0:
-                counter_times -= 1
-                return output
+            result = cached_values[key][0]
+            del cached_values[key]
+            return result
 
         return wrapper
 

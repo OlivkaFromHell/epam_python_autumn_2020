@@ -25,16 +25,8 @@ def make_filter(**keywords):
     """
         Generate filter object for specified keywords
     """
-    filter_funcs = []
-    for key, value in keywords.items():
-
-        def keyword_filter_func(item):
-            if key in item and item[key] == value:
-                pass
-            else:
-                return False
-            return True
-        filter_funcs.append(keyword_filter_func)
+    filter_funcs = [lambda item, key=key, value=value: item.get(key, False) == value for key, value in
+                    keywords.items()]
 
     return Filter(*filter_funcs)
 
@@ -50,11 +42,11 @@ sample_data = [
         "is_dead": True,
         "kind": "parrot",
         "type": "bird",
-        "name": "polly"
+        "name": "polly",
     }
 ]
 
-keys = {'name': 'Bill', 'type': 'bird'}
+keys = {'name': 'polly', 'type': 'person'}
 
 # should return only second entry from the list
 a = make_filter(**keys).apply(sample_data)
