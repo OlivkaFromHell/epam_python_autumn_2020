@@ -55,7 +55,19 @@ def test_args_order():
     assert val_1 is not val_2
 
 
-def test_args_name():
+def test_kwargs_order():
+    def func(a: int, b: int):
+        return a - b
+
+    cache_func = cache(func)
+
+    val_1 = cache_func(a=3, b=2)
+    val_2 = cache_func(b=2, a=3)
+
+    assert val_1 is val_2
+
+
+def test_args_kwargs_name():
     def func(a: str, b: str):
         return a + b
 
@@ -64,4 +76,4 @@ def test_args_name():
     val_1 = cache_func('2', b='\'b\'')
     val_2 = cache_func(a='2', b='\'b\'')
 
-    assert val_1 is not val_2
+    assert val_1 is val_2
