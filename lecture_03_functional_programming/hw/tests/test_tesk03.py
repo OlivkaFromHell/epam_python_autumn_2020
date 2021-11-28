@@ -62,3 +62,17 @@ def test_blank_data():
 ])
 def test_blank_data_with_keys(keys):
     assert make_filter(**keys).apply(blank_data) == blank_data
+
+
+@pytest.mark.parametrize('data,keys', [
+    (sample_data, {'is_human': True}),
+    (sample_data, {'is_human': False}),
+    (sample_data, {'is_human': 'False'}),
+    (sample_data, {'Genre': 'Hip-Hop'}),
+    (sample_data, {'Genre': 'Hip-Hop', 'type': 'bird'}),
+    (sample_data, {'Genre': 'Hip-Hop', 'age': '15'}),
+    (sample_data, {'age': 13}),
+    (sample_data, {'age': ''}),
+])
+def test_with_non_existing_keys(data, keys):
+    assert make_filter(**keys).apply(data) == []

@@ -25,31 +25,33 @@ def make_filter(**keywords):
     """
         Generate filter object for specified keywords
     """
-    filter_funcs = [lambda item, key=key, value=value: item.get(key, False) == value for key, value in
+    does_not_exist = object()
+    filter_funcs = [lambda item, key=key, value=value: item.get(key, does_not_exist) == value for key, value in
                     keywords.items()]
 
     return Filter(*filter_funcs)
 
 
-sample_data = [
-    {
-        "name": "Bill",
-        "last_name": "Gilbert",
-        "occupation": "was here",
-        "type": "person",
-    },
-    {
-        "is_dead": True,
-        "kind": "parrot",
-        "type": "bird",
-        "name": "polly",
-    }
-]
+if __name__ == '__main__':
+    sample_data = [
+        {
+            "name": "Bill",
+            "last_name": "Gilbert",
+            "occupation": "was here",
+            "type": "person",
+        },
+        {
+            "is_dead": False,
+            "kind": "parrot",
+            "type": "bird",
+            "name": "polly",
+        }
+    ]
 
-keys = {'name': 'polly', 'type': 'person'}
+    keys = {'name': 'polly', 'type': 'bird', 'trent': False}
 
-# should return only second entry from the list
-a = make_filter(**keys).apply(sample_data)
-print(a)
+    # should return only second entry from the list
+    a = make_filter(**keys).apply(sample_data)
+    print(a)
 
-# There are multiple bugs in this code. Find them all and write tests for faulty cases.
+    # There are multiple bugs in this code. Find them all and write tests for faulty cases.

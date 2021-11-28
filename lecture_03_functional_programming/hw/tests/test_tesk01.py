@@ -2,30 +2,62 @@ from hw.task01 import cache
 
 
 def test_positive_case1():
-    @cache(times=2)
-    def f():
-        return 3
+    time_invoked = 0
 
-    assert f() + f() + f() + f() == 12
+    @cache(times=2)
+    def f(a):
+        nonlocal time_invoked
+        time_invoked += 1
+        return a
+
+    f(1) + f(2) + f(3) + f(4)
+
+    assert time_invoked == 4
 
 
 def test_positive_case2():
+    time_invoked = 0
+
     @cache(times=2)
-    def f(a: int, b: int = 4):
+    def f(a: int, b: int = 1):
+        nonlocal time_invoked
+        time_invoked += 1
         return a * b
 
-    assert f(1, b=1) + f(1, b=1) + f(2, b=1) + f(1) == 8
+    f(1, b=1) + f(a=1, b=1) + f(1)
+
+    assert time_invoked == 1
 
 
 def test_positive_case3():
-    @cache(times=3)
+    time_invoked = 0
+
+    @cache(times=2)
     def f(a: int):
+        nonlocal time_invoked
+        time_invoked += 1
         return a
 
-    assert f(1) + f(2) + f(2) + f(2) == 7
+    f(1) + f(2) + f(2) + f(2)
+
+    assert time_invoked == 2
 
 
 def test_positive_case4():
+    time_invoked = 0
+
+    @cache(times=2)
+    def f(a: int):
+        nonlocal time_invoked
+        time_invoked += 1
+        return a
+
+    f(1) + f(2) + f(2) + f(2) + f(2)
+
+    assert time_invoked == 3
+
+
+def test_positive_case5():
     times = 5
     time_invoked = 0
 
