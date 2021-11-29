@@ -21,11 +21,11 @@ You will learn:
  - how to write to stderr
  - how to test output to the stderr and stdout
 """
-import sys
+import logging
 
 
 def my_precious_logger(text: str):
     if text.startswith('error'):
-        print(text, file=sys.stderr)
+        logging.error(text)
     else:
-        print(text, file=sys.stdout)
+        logging.info(text)

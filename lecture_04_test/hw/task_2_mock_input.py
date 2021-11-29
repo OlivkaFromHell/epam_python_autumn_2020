@@ -31,7 +31,14 @@ import requests
 
 def count_dots_on_i(url: str) -> int:
     try:
-        html = requests.get(url).text
+        page = requests.get(url)
+    except requests.exceptions.ConnectionError:
+        raise ValueError(f"Unreachable {url}")
+
+    if page.status_code // 100 != 2:
+        raise ValueError(f"Unreachable {url}")
+    try:
+        html = page.text
     except Exception:
         raise ValueError(f"Unreachable {url}")
 

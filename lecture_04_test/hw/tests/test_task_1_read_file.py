@@ -1,7 +1,7 @@
 import os
 
 import pytest
-from hw.task_1_read_file import read_magic_number
+from hw.task_1_read_file import MagicNumberError, read_magic_number
 
 cwd = os.path.dirname(os.path.realpath(__file__)) + '/'
 
@@ -46,6 +46,16 @@ def test_with_error(path, text):
     with open(path, 'w') as f:
         f.write(text)
     with pytest.raises(ValueError):
+        read_magic_number(path)
+
+    os.remove(path)
+
+
+def test_empty_file():
+    path = cwd + 'test.txt'
+    with open(path, 'w'):
+        pass
+    with pytest.raises(MagicNumberError):
         read_magic_number(path)
 
     os.remove(path)

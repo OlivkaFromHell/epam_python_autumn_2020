@@ -28,10 +28,15 @@ You will learn:
 """
 
 
+class MagicNumberError(ValueError):
+    """Means that errror ocured"""
+
+
 def read_magic_number(path: str) -> bool:
     try:
         with open(path) as f:
-            num = float(f.readline().strip())
+            first_line = f.readline().strip()
+            num = float(first_line)
             return 1 <= num < 3
-    except Exception as e:
-        raise ValueError from e
+    except Exception as err:
+        raise MagicNumberError(f'Error occured: {err}') from err

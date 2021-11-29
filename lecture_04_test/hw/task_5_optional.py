@@ -27,6 +27,10 @@ def fizzbuzz(n: int):
 
     >>> list(fizzbuzz(5))
     ['1', '2', 'fizz', '4', 'buzz']
+    >>> list(fizzbuzz(0))
+    []
+    >>> list(fizzbuzz(-1))
+    []
     """
 
     for i in range(1, n + 1):
