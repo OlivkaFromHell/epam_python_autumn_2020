@@ -25,9 +25,12 @@ def make_filter(**keywords):
     """
         Generate filter object for specified keywords
     """
-    does_not_exist = object()
-    filter_funcs = [lambda item, key=key, value=value: item.get(key, does_not_exist) == value for key, value in
-                    keywords.items()]
+    filter_funcs = []
+    for key, value in keywords.items():
+        def keyword_filter_func(item, key=key, value=value):
+            return key in item and item[key] == value
+
+        filter_funcs.append(keyword_filter_func)
 
     return Filter(*filter_funcs)
 
@@ -48,7 +51,7 @@ if __name__ == '__main__':
         }
     ]
 
-    keys = {'name': 'polly', 'type': 'bird', 'trent': False}
+    keys = {'name': 'polly', 'type': 'bird'}
 
     # should return only second entry from the list
     a = make_filter(**keys).apply(sample_data)

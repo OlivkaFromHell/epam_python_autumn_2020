@@ -76,14 +76,17 @@ def test_positive_case5():
 
 
 def test_positive_case_with_id():
+    time_invoked = 0
+
     @cache(times=1)
-    def func(a, b):
+    def func(a: int, b: int):
+        nonlocal time_invoked
+        time_invoked += 1
         return (a ** b) ** 2
 
     some = 100, 200
-    val_1 = func(*some)
-    val_2 = func(*some)
-    val_3 = func(*some)
+    func(*some)
+    func(*some)
+    func(*some)
 
-    assert val_1 is val_2
-    assert val_2 is not val_3
+    assert time_invoked == 2
