@@ -3,8 +3,6 @@ import os
 import pytest
 from hw.task_1_read_file import MagicNumberError, read_magic_number
 
-cwd = os.path.dirname(os.path.realpath(__file__)) + '/'
-
 
 @pytest.mark.parametrize("path, text", [
     ('test1.txt', '2\nHi, fellows\nisdigit'),
@@ -13,7 +11,7 @@ cwd = os.path.dirname(os.path.realpath(__file__)) + '/'
     ('test3.txt', '2.999999\n3\n5'),
 ])
 def test_positive_case(path, text):
-    path = cwd + path
+    path = os.path.join(os.getcwd(), path)
     with open(path, 'w') as f:
         f.write(text)
     assert read_magic_number(path) is True
@@ -28,7 +26,7 @@ def test_positive_case(path, text):
     ('test.txt', '1e4\n'),
 ])
 def test_negative_case(path, text):
-    path = cwd + path
+    path = os.path.join(os.getcwd(), path)
     with open(path, 'w') as f:
         f.write(text)
     assert read_magic_number(path) is False
@@ -42,7 +40,7 @@ def test_negative_case(path, text):
     ('test.txt', 'python4.999999'),
 ])
 def test_with_error(path, text):
-    path = cwd + path
+    path = os.path.join(os.getcwd(), path)
     with open(path, 'w') as f:
         f.write(text)
     with pytest.raises(ValueError):
@@ -52,7 +50,7 @@ def test_with_error(path, text):
 
 
 def test_empty_file():
-    path = cwd + 'test.txt'
+    path = os.path.join(os.getcwd(), 'test.txt')
     with open(path, 'w'):
         pass
     with pytest.raises(MagicNumberError):

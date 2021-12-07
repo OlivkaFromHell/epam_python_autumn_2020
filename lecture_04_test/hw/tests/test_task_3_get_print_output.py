@@ -1,5 +1,3 @@
-import logging
-
 import pytest
 from hw.task_3_get_print_output import my_precious_logger
 
@@ -9,11 +7,11 @@ from hw.task_3_get_print_output import my_precious_logger
     'ERROR: invalid data',
     'Passed'
 ])
-def test_positive_stdout_case(msg, caplog):
-    caplog.set_level(logging.INFO)
+def test_positive_stdout_case(msg, capsys):
     my_precious_logger(msg)
-    for record in caplog.records:
-        assert record.levelname == "INFO"
+    out, err = capsys.readouterr()
+    assert out == msg
+    assert err == ''
 
 
 @pytest.mark.parametrize('msg', [
@@ -21,18 +19,18 @@ def test_positive_stdout_case(msg, caplog):
     'error: stack overflow',
     'error',
 ])
-def test_positive_stderr_case(msg, caplog):
-    caplog.set_level(logging.INFO)
+def test_positive_stderr_case(msg, capsys):
     my_precious_logger(msg)
-    for record in caplog.records:
-        assert record.levelname == "ERROR"
+    out, err = capsys.readouterr()
+    assert out == ''
+    assert err == msg
 
 
-def test_blank_input(caplog):
-    caplog.set_level(logging.INFO)
+def test_blank_input(capsys):
     my_precious_logger('')
-    for record in caplog.records:
-        assert record.levelname == "INFO"
+    out, err = capsys.readouterr()
+    assert out == ''
+    assert err == ''
 
 
 @pytest.mark.parametrize('msg', [
@@ -40,8 +38,8 @@ def test_blank_input(caplog):
     'Error: stack overflow',
     'ErROr',
 ])
-def test_error_upper_case(msg, caplog):
-    caplog.set_level(logging.INFO)
+def test_error_upper_case(msg, capsys):
     my_precious_logger(msg)
-    for record in caplog.records:
-        assert record.levelname == "INFO"
+    out, err = capsys.readouterr()
+    assert out == msg
+    assert err == ''
