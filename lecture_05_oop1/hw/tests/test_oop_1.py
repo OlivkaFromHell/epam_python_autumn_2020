@@ -7,13 +7,13 @@ from hw.oop_1 import Homework, Student, Teacher
 
 @pytest.mark.parametrize('text', ['oop', '123', 'Teacher', '\00bx'])
 def test_homework_text(text):
-    homework = Homework(text, days=7)
+    homework = Homework(text, deadline=7)
     assert homework.text == text
 
 
 @pytest.mark.parametrize('time', [1, 2, 3, 100])
 def test_homework(time):
-    homework = Homework('no matters', days=time)
+    homework = Homework('no matters', deadline=time)
     assert homework.deadline == datetime.timedelta(days=time)
 
 
@@ -57,7 +57,7 @@ def test_student_homework_is_not_done(first_name, last_name, time):
     homework.created = datetime.datetime(2000, 1, 1, 0, 0, 0)
     homework.is_active.return_value = datetime.datetime(2021, 1, 2, 0, 0, 0) - homework.deadline < homework.created
 
-    assert not student.do_homework(homework)
+    assert student.do_homework(homework) is None
 
 
 @pytest.mark.parametrize('first_name, last_name', [('Galina', 'Petrovna'), ('Olga', 'Ivanovna')])
@@ -70,5 +70,12 @@ def test_teacher_name(first_name, last_name):
                          [('Ivan', 'Petrov', 'eng', 5), ('Artur', 'Jack', 'math', 10)])
 def test_teacher_create_homework(first_name, last_name, text, time):
     teacher = Teacher(first_name=first_name, last_name=last_name)
-
     assert teacher.create_homework(text, time).text == Homework(text, time).text
+
+
+@pytest.mark.parametrize('first_name, last_name, text, time',
+                         [('Ivan', 'Petrov', 'eng', 5), ('Artur', 'Jack', 'math', 10)])
+def test_teacher_create_homework_deadline(first_name, last_name, text, time):
+    teacher = Teacher(first_name=first_name, last_name=last_name)
+    homework = teacher.create_homework(text, time)
+    assert homework.deadline == datetime.timedelta(days=time)

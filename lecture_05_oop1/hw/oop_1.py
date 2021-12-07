@@ -42,9 +42,9 @@ import datetime
 
 class Homework:
 
-    def __init__(self, text: str, days: int):
+    def __init__(self, text: str, deadline: int):
         self.text = text
-        self.deadline = datetime.timedelta(days=days)
+        self.deadline = datetime.timedelta(days=deadline)
         self.created = datetime.datetime.now()
 
     def is_active(self) -> bool:
@@ -53,7 +53,7 @@ class Homework:
 
 class Student:
 
-    def __init__(self, first_name, last_name):
+    def __init__(self, first_name: str, last_name: str):
         self.first_name = first_name
         self.last_name = last_name
 
@@ -67,13 +67,13 @@ class Student:
 
 class Teacher:
 
-    def __init__(self, first_name, last_name):
+    def __init__(self, first_name: str, last_name: str):
         self.first_name = first_name
         self.last_name = last_name
 
     @staticmethod
-    def create_homework(task: str, days: int) -> Homework:
-        return Homework(task, days)
+    def create_homework(text: str, deadline: int) -> Homework:
+        return Homework(text, deadline)
 
 
 if __name__ == '__main__':
