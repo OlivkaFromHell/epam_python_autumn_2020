@@ -53,6 +53,65 @@ import datetime
 from collections import defaultdict
 
 
+class DeadlineError(Exception):
+    pass
+
+
+class Homework:
+
+    def __init__(self, text: str, deadline: int):
+        self.text = text
+        self.deadline = datetime.timedelta(days=deadline)
+        self.created = datetime.datetime.now()
+
+    def is_active(self) -> bool:
+        return datetime.datetime.now() - self.deadline < self.created
+
+
+class Student:
+
+    def __init__(self, first_name: str, last_name: str):
+        self.first_name = first_name
+        self.last_name = last_name
+
+    def do_homework(self, homework: Homework, solution: str):
+        if homework.is_active():
+            return HomeworkResult(homework, solution, author=self, created=homework.created)
+        raise DeadlineError('You are late')
+
+
+class HomeworkResult:
+
+    def __init__(self, homework: Homework, solution: str, author: Student, created: datetime.datetime):
+        if not isinstance(homework, Homework):
+            raise TypeError('You gave a not Homework object')
+        self.homework = homework
+        self.solution = solution
+        self.author = author
+        self.created = created
+
+
+class Teacher(Student):
+    homework_done = defaultdict(HomeworkResult)
+
+    @staticmethod
+    def create_homework(text: str, deadline: int) -> Homework:
+        return Homework(text, deadline)
+
+    def check_homework(self, homeworkresult: HomeworkResult):
+        if len(homeworkresult.homework.text) > 5:
+            self.homework_done[homeworkresult.homework] = homeworkresult
+            return True
+        return False
+
+    @classmethod
+    def reset_results(cls, homework: Homework = None):
+        if homework:
+            del cls.homework_done[homework]
+        else:
+            cls.homework_done = defaultdict(HomeworkResult)
+
+
 if __name__ == '__main__':
     opp_teacher = Teacher('Daniil', 'Shadrin')
     advanced_python_teacher = Teacher('Aleksandr', 'Smetanin')
@@ -81,4 +140,6 @@ if __name__ == '__main__':
     opp_teacher.check_homework(result_3)
 
     print(Teacher.homework_done[oop_hw])
+    print(Teacher.homework_done[0].solution)
     Teacher.reset_results()
+    print(Teacher.homework_done)
