@@ -1,59 +1,47 @@
-import os
-
 import pytest
 from hw.task_1_read_file import MagicNumberError, read_magic_number
 
 
-@pytest.mark.parametrize("path, text", [
-    ('test1.txt', '2\nHi, fellows\nisdigit'),
-    ('test2.txt', '2.4\nStar\nWars'),
-    ('test3.txt', '1\n'),
-    ('test3.txt', '2.999999\n3\n5'),
-])
-def test_positive_case(path, text):
-    path = os.path.join(os.getcwd(), path)
-    with open(path, 'w') as f:
-        f.write(text)
-    assert read_magic_number(path) is True
-    os.remove(path)
+@pytest.fixture
+def opened_file(request, tmpdir):
+    file = tmpdir.join('test.txt')
+    file.write(request.param)
+    return file.strpath
 
 
-@pytest.mark.parametrize("path, text", [
-    ('test.txt', '100\nBye, fellows\nis'),
-    ('test.txt', '3\nLOTR'),
-    ('test.txt', '-3\n'),
-    ('test.txt', '0.999999'),
-    ('test.txt', '1e4\n'),
-])
-def test_negative_case(path, text):
-    path = os.path.join(os.getcwd(), path)
-    with open(path, 'w') as f:
-        f.write(text)
-    assert read_magic_number(path) is False
-    os.remove(path)
+@pytest.mark.parametrize("opened_file", [
+    '2\nHi, fellows\nisdigit',
+    '2.4\nStar\nWars',
+    '1\n',
+    '2.999999\n3\n5',
+], indirect=True)
+def test_positive_case(opened_file):
+    assert read_magic_number(opened_file) is True
 
 
-@pytest.mark.parametrize("path, text", [
-    ('test.txt', '\nBye, fellows\nis'),
-    ('test.txt', '2,1\nLOTR'),
-    ('test.txt', '0.9.3\n'),
-    ('test.txt', 'python4.999999'),
-])
-def test_with_error(path, text):
-    path = os.path.join(os.getcwd(), path)
-    with open(path, 'w') as f:
-        f.write(text)
+@pytest.mark.parametrize("opened_file", [
+    '100\nBye, fellows\nis',
+    '3\nLOTR',
+    '-3\n',
+    '0.999999',
+    '1e4\n',
+], indirect=True)
+def test_negative_case(opened_file):
+    assert read_magic_number(opened_file) is False
+
+
+@pytest.mark.parametrize("opened_file", [
+    '\nBye, fellows\nis',
+    '2,1\nLOTR',
+    '0.9.3\n',
+    'python4.999999',
+], indirect=True)
+def test_with_error(opened_file):
     with pytest.raises(ValueError):
-        read_magic_number(path)
-
-    os.remove(path)
+        read_magic_number(opened_file)
 
 
-def test_empty_file():
-    path = os.path.join(os.getcwd(), 'test.txt')
-    with open(path, 'w'):
-        pass
+@pytest.mark.parametrize("opened_file", '\n', indirect=True)
+def test_empty_file(opened_file):
     with pytest.raises(MagicNumberError):
-        read_magic_number(path)
-
-    os.remove(path)
+        read_magic_number(opened_file)
