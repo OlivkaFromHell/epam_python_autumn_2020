@@ -1,5 +1,5 @@
 import datetime
-from unittest.mock import Mock
+from unittest.mock import MagicMock
 
 import pytest
 from hw.oop_1 import Homework, Student, Teacher
@@ -18,14 +18,15 @@ def test_homework(time):
 
 
 @pytest.mark.parametrize('time', [2, 5, 10, 100])
-def test_homework_is_active(time):
-    homework = Mock()
-    homework.text = 'oop'
-    homework.deadline = datetime.timedelta(days=time)
+def test_homework_is_active(time, monkeypatch):
+    homework = Homework(text='oop', deadline=4)
     homework.created = datetime.datetime(2021, 1, 1, 0, 0, 0)
-    homework.is_active = datetime.datetime(2021, 1, 2, 0, 0, 0) - homework.deadline < homework.created
 
-    assert homework.is_active
+    datetime_mock = MagicMock(wrap=datetime.datetime)
+    datetime_mock.now.return_value = datetime.datetime(2021, 1, 3, 0, 0, 0)
+    monkeypatch.setattr(datetime, 'datetime', datetime_mock)
+
+    assert homework.is_active()
 
 
 @pytest.mark.parametrize('first_name, last_name', [('Ivan', 'Petrov'), ('Artur', 'Jack')])
@@ -35,29 +36,33 @@ def test_student_name(first_name, last_name):
 
 
 @pytest.mark.parametrize('first_name, last_name, time', [('Ivan', 'Petrov', 5), ('Artur', 'Jack', 10)])
-def test_student_homework_is_done(first_name, last_name, time):
+def test_student_homework_is_done(first_name, last_name, time, monkeypatch):
     student = Student(first_name=first_name, last_name=last_name)
 
-    homework = Mock()
-    homework.text = 'oop'
-    homework.deadline = datetime.timedelta(days=time)
+    homework = Homework('some_text', deadline=time)
     homework.created = datetime.datetime(2021, 1, 1, 0, 0, 0)
-    homework.is_active.return_value = datetime.datetime(2021, 1, 2, 0, 0, 0) - homework.deadline < homework.created
+
+    datetime_mock = MagicMock(wrap=datetime.datetime)
+    datetime_mock.now.return_value = datetime.datetime(2021, 1, 3, 0, 0, 0)
+    monkeypatch.setattr(datetime, 'datetime', datetime_mock)
 
     assert student.do_homework(homework) == homework
 
 
 @pytest.mark.parametrize('first_name, last_name, time', [('Ivan', 'Petrov', 5), ('Artur', 'Jack', 10)])
-def test_student_homework_is_not_done(first_name, last_name, time):
+def test_student_homework_is_not_done(first_name, last_name, time, monkeypatch, capsys):
     student = Student(first_name=first_name, last_name=last_name)
 
-    homework = Mock()
-    homework.text = 'oop'
-    homework.deadline = datetime.timedelta(days=time)
-    homework.created = datetime.datetime(2000, 1, 1, 0, 0, 0)
-    homework.is_active.return_value = datetime.datetime(2021, 1, 2, 0, 0, 0) - homework.deadline < homework.created
+    homework = Homework('some_text', deadline=time)
+    homework.created = datetime.datetime(2021, 1, 1, 0, 0, 0)
+
+    datetime_mock = MagicMock(wrap=datetime.datetime)
+    datetime_mock.now.return_value = datetime.datetime(2021, 1, 11, 0, 0, 0)
+    monkeypatch.setattr(datetime, 'datetime', datetime_mock)
 
     assert student.do_homework(homework) is None
+    out, _ = capsys.readouterr()
+    assert out == 'You are late\n'
 
 
 @pytest.mark.parametrize('first_name, last_name', [('Galina', 'Petrovna'), ('Olga', 'Ivanovna')])
@@ -66,16 +71,17 @@ def test_teacher_name(first_name, last_name):
     assert teacher.first_name + teacher.last_name == first_name + last_name
 
 
-@pytest.mark.parametrize('first_name, last_name, text, time',
+@pytest.mark.parametrize('first_name, last_name, text, deadline',
                          [('Ivan', 'Petrov', 'eng', 5), ('Artur', 'Jack', 'math', 10)])
-def test_teacher_create_homework(first_name, last_name, text, time):
+def test_teacher_create_homework_text(first_name, last_name, text, deadline):
     teacher = Teacher(first_name=first_name, last_name=last_name)
-    assert teacher.create_homework(text, time).text == Homework(text, time).text
+    homework_from_teacher = teacher.create_homework(text, deadline)
+    assert homework_from_teacher.text == text
 
 
 @pytest.mark.parametrize('first_name, last_name, text, time',
                          [('Ivan', 'Petrov', 'eng', 5), ('Artur', 'Jack', 'math', 10)])
 def test_teacher_create_homework_deadline(first_name, last_name, text, time):
     teacher = Teacher(first_name=first_name, last_name=last_name)
-    homework = teacher.create_homework(text, time)
-    assert homework.deadline == datetime.timedelta(days=time)
+    homework_from_teacher = teacher.create_homework(text, time)
+    assert homework_from_teacher.deadline == datetime.timedelta(days=time)
