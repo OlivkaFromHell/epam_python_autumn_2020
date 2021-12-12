@@ -23,4 +23,29 @@ from typing import List
 
 
 def fizzbuzz(n: int) -> List[str]:
-    pass
+    """
+    Return n FizzBuzz numbers
+
+    >>> fizzbuzz(5)
+    ['1', '2', 'fizz', '4', 'buzz']
+    >>> fizzbuzz(0)
+    []
+    >>> fizzbuzz(-1)
+    []
+    >>> fizzbuzz(15)
+    ['1', '2', 'fizz', '4', 'buzz', 'fizz', '7', '8', 'fizz', 'buzz', '11', 'fizz', '13', '14', 'fizz buzz']
+    """
+    ans = [str(i) for i in range(1, n + 1)]
+    for i in range(n):
+        if (i + 1) % 15 == 0:
+            ans[i] = 'fizz buzz'
+        elif (i + 1) % 3 == 0:
+            ans[i] = 'fizz'
+        elif (i + 1) % 5 == 0:
+            ans[i] = 'buzz'
+    return ans
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
