@@ -100,7 +100,7 @@ class Teacher(Student):
 
     @classmethod
     def check_homework(cls, homeworkresult: HomeworkResult) -> bool:
-        if len(homeworkresult.homework.text) > 5:
+        if len(homeworkresult.solution) > 5:
             cls.homework_done[homeworkresult.homework] = homeworkresult
             return True
         return False
@@ -131,7 +131,7 @@ if __name__ == '__main__':
     except Exception:
         print('There was an exception here')
     opp_teacher.check_homework(result_1)
-    print(Teacher.homework_done[0].solution)
+    print('Teacher.homework_done', Teacher.homework_done[oop_hw])
     temp_1 = opp_teacher.homework_done
 
     advanced_python_teacher.check_homework(result_1)

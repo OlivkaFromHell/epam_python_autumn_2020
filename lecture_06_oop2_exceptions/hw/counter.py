@@ -8,37 +8,27 @@ reset_instances_counter - сбросить счетчик экземпляров
 
 Ниже пример использования
 """
+from collections import defaultdict
 
 
 def instances_counter(cls):
     class NewCls:
-        counter = 0
+        counter = defaultdict(int)
 
         def __init__(self, *args, **kwargs):
             self._obj = cls(*args, **kwargs)
-            NewCls.counter += 1
-            self._obj.counter = NewCls.counter
+            NewCls.counter[self.__class__.__name__] += 1
 
         @classmethod
         def get_created_instances(cls):
-            return cls.counter
+            return NewCls.counter[cls.__name__]
 
         @classmethod
         def reset_instances_counter(cls):
             try:
-                return cls.counter
+                return NewCls.counter[cls.__name__]
             finally:
-                cls.counter = 0
-
-        def __getattribute__(self, item):
-            try:
-                print('smth')
-                x = super().__getattribute__(item)
-            except AttributeError:
-                print('error')
-                return self._obj.__getattribute__(item)
-            finally:
-                return x
+                NewCls.counter[cls.__name__] = 0
 
     return NewCls
 
@@ -52,18 +42,23 @@ class SubUser(User):
     pass
 
 
-if __name__ == '__main__':
+class SubSubUser(SubUser):
+    counter = 1
 
+    def __init__(self):
+        super().__init__()
+        self.counter = 2
+
+
+if __name__ == '__main__':
     print(User.get_created_instances())  # 0
     user, _, _ = User(), User(), User()
     sub_user = SubUser()
-    print(SubUser.get_created_instances())
+    sub_sub_user = SubSubUser()
+    print(user.get_created_instances())
     print(sub_user.get_created_instances())
-    print(user.counter)
-    print(sub_user.counter)
-    # print(User.get_created_instances())  # 0
-
-    # print(sub_user.get_created_instances())
-    # print(user.get_created_instances())  # 3
-    # print(user.reset_instances_counter())  # 3
-    # print(user.get_created_instances())
+    print(User.get_created_instances())  # 0
+    print(user.reset_instances_counter())  # 3
+    print(user.get_created_instances())  # 0
+    print('subsub', sub_sub_user.get_created_instances())
+    print(user.counter[User.__name__])
