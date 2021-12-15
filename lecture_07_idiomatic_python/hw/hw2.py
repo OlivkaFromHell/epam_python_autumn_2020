@@ -18,7 +18,33 @@ Examples:
     Explanation: s becomes "c" while t becomes "b".
 
 """
+from itertools import zip_longest
 
 
-def backspace_compare(first: str, second: str):
-    ...
+def process_data(data: str):
+    sharp_counter = 0
+    for symbol in data[::-1]:
+        if symbol == '#':
+            sharp_counter += 1
+            continue
+        if sharp_counter:
+            sharp_counter -= 1
+            continue
+        yield symbol
+
+
+def backspace_compare(first: str, second: str) -> bool:
+    first_gen = process_data(first)
+    second_gen = process_data(second)
+
+    for first_elem, second_elem in zip_longest(first_gen, second_gen, fillvalue=None):
+        print(first_elem, second_elem)
+        if first_elem != second_elem:
+            return False
+    return True
+
+
+if __name__ == '__main__':
+    s = "aa##d"
+    t = "#d"
+    print(backspace_compare(s, t))
