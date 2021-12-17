@@ -12,7 +12,7 @@ from collections import defaultdict
 
 
 def instances_counter(cls):
-    class NewCls:
+    class NewCls(cls):
         counter = defaultdict(int)
 
         def __init__(self, *args, **kwargs):
@@ -25,40 +25,37 @@ def instances_counter(cls):
 
         @classmethod
         def reset_instances_counter(cls):
-            try:
-                return NewCls.counter[cls.__name__]
-            finally:
-                NewCls.counter[cls.__name__] = 0
+            old_counter = NewCls.counter[cls.__name__]
+            NewCls.counter[cls.__name__] = 0
+            return old_counter
 
     return NewCls
 
 
 @instances_counter
 class User:
-    pass
+    user_data = 'nothing'
+
+    @staticmethod
+    def throw_one():
+        return 1
 
 
 class SubUser(User):
-    pass
-
-
-class SubSubUser(SubUser):
-    counter = 1
-
     def __init__(self):
         super().__init__()
-        self.counter = 2
+
+    @staticmethod
+    def throw_two():
+        return 2
 
 
 if __name__ == '__main__':
+
     print(User.get_created_instances())  # 0
     user, _, _ = User(), User(), User()
     sub_user = SubUser()
-    sub_sub_user = SubSubUser()
-    print(user.get_created_instances())
-    print(sub_user.get_created_instances())
+    print(SubUser.get_created_instances())
+    print(User.user_data)
+    print('throw 2', SubUser.throw_one())
     print(User.get_created_instances())  # 0
-    print(user.reset_instances_counter())  # 3
-    print(user.get_created_instances())  # 0
-    print('subsub', sub_sub_user.get_created_instances())
-    print(user.counter[User.__name__])

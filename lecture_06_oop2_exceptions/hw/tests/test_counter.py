@@ -6,10 +6,17 @@ from hw.counter import instances_counter
 def data():
     @instances_counter
     class User:
-        pass
+        @staticmethod
+        def throw_one():
+            return 1
 
     class SubUser(User):
-        pass
+        def __init__(self):
+            super().__init__()
+
+        @staticmethod
+        def throw_two():
+            return 2
 
     class SubSubUser(SubUser):
         counter = 1
@@ -102,3 +109,19 @@ def test_advisor_instance_reset_instances_counter(data):
     advisor, _ = advisor_class(), user_class()
     assert advisor.reset_instances_counter() == 1
     assert advisor.get_created_instances() == 0
+
+
+def test_methods_acces(data):
+    user_class, _, _, _, _, _ = data
+
+    assert user_class.throw_one() == 1
+
+
+def test_methods_acces_child_class(data):
+    _, sub_user_class, _, _, _, _ = data
+    assert sub_user_class.throw_one() == 1
+
+
+def test_methods_acces_child_class_derive_method(data):
+    _, sub_user_class, _, _, _, _ = data
+    assert sub_user_class.throw_two() == 2
