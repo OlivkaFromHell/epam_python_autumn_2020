@@ -28,24 +28,24 @@ example_tree = {
 }
 
 
-def find_occurences_in_collection(collection_obj: (Collection, dict), element: Any) -> int:
-    """find occurences of element if there is a Collection object as input"""
-    _counter = 0
-    for i in collection_obj:
-        if isinstance(i, collections.abc.Mapping):
-            _counter += find_occurrences(i, element)
-        elif i == element:
-            _counter += 1
-    return _counter
-
-
 def find_occurrences(tree: dict, element: Any) -> int:
     """Returns the number of occurences of element in dict object"""
+
+    def _find_occurences_in_collection(collection_obj: (Collection, dict), element: Any) -> int:
+        """find occurences of element if there is a Collection object as input"""
+        _counter = 0
+        for i in collection_obj:
+            if isinstance(i, collections.abc.Mapping):
+                _counter += find_occurrences(i, element)
+            elif i == element:
+                _counter += 1
+        return _counter
+
     counter = 0
 
     for key, value in tree.items():
         if not isinstance(value, (str, dict)) and isinstance(value, collections.abc.Collection):
-            counter += find_occurences_in_collection(value, element)
+            counter += _find_occurences_in_collection(value, element)
         if isinstance(value, collections.abc.Mapping):
             counter += find_occurrences(value, element)
         if key == element:
