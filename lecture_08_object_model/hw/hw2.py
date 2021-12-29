@@ -5,14 +5,32 @@ class TableData:
     def __init__(self, database_name: str, table_name: str):
         self.table_name = table_name
 
-        conn = sqlite3.connect(database_name)
-        self.cursor = conn.cursor()
+        self._conn = sqlite3.connect(database_name)
+        self._cursor = self._conn.cursor()
 
         # get table column names to use them as dict keys
-        self.cursor.execute(f"SELECT name FROM PRAGMA_TABLE_INFO('{table_name}')")
-        self.columns = []
+        self._cursor.execute(f"SELECT name FROM PRAGMA_TABLE_INFO('{self.table_name}')")
+        columns = []
         for column in self.cursor.fetchall():
-            self.columns.append(column[0])
+            columns.append(column[0])
+        self.columns = columns
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
+
+    @property
+    def connection(self):
+        return self._conn
+
+    @property
+    def cursor(self):
+        return self._cursor
+
+    def close(self):
+        self.connection.close()
 
     def __contains__(self, item):
         for row in self:
@@ -22,20 +40,21 @@ class TableData:
         return False
 
     def __len__(self):
-        self.cursor.execute(f"SELECT count(*) FROM {self.table_name}")
+        self._cursor.execute(f"SELECT count(*) FROM {self.table_name}")
         data = self.cursor.fetchone()[0]
         return data
 
     def __iter__(self):
-        for row in self.cursor.execute(f'SELECT * FROM {self.table_name}'):
+        for row in self._cursor.execute(f'SELECT * FROM {self.table_name}'):
             response = {}
             for key, value in zip(self.columns, row):
                 response[key] = value
             yield response
 
     def __getitem__(self, item):
+
         if isinstance(item, str):
-            self.cursor.execute(f"SELECT * FROM {self.table_name} WHERE name = '{item}'")
+            self._cursor.execute(f"SELECT * FROM {self.table_name} WHERE name=:name", f'{{name:{item}}}')
             response = {}
             row = self.cursor.fetchone()
 

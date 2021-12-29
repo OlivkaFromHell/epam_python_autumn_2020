@@ -11,19 +11,19 @@ path = os.path.join(os.getcwd(), 'example.sqlite')
     ('books', 3)
 ])
 def test_len_attr(table_name, result):
-    table = TableData(path, table_name)
-    assert len(table) == result
+    with TableData(path, table_name) as table:
+        assert len(table) == result
 
 
 @pytest.mark.parametrize('table_name, name, result', [
-    ('presidents', 'Yeltsin',  {'name': 'Yeltsin', 'age': 999, 'country': 'Russia'}),
-    ('presidents', 'Trump',  {'name': 'Trump', 'age': 1337, 'country': 'US'}),
+    ('presidents', 'Yeltsin', {'name': 'Yeltsin', 'age': 999, 'country': 'Russia'}),
+    ('presidents', 'Trump', {'name': 'Trump', 'age': 1337, 'country': 'US'}),
     ('books', '1984', {'name': '1984', 'author': 'Orwell'}),
     ('books', 'Farenheit 451', {'name': 'Farenheit 451', 'author': 'Bradbury'}),
 ])
 def test_access_as_collection(table_name, name, result):
-    table = TableData(path, table_name)
-    assert table.__getitem__(name) == result
+    with TableData(path, table_name) as table:
+        assert table.__getitem__(name) == result
 
 
 @pytest.mark.parametrize('table_name, column, result', [
@@ -33,11 +33,11 @@ def test_access_as_collection(table_name, name, result):
     ('books', 'author', ['Bradbury', 'Huxley', 'Orwell']),
 ])
 def test_iter_method(table_name, column, result):
-    table = TableData(path, table_name)
-    list_of_names = []
-    for row in table:
-        list_of_names.append(row.__getitem__(column))
-    assert list_of_names == result
+    with TableData(path, table_name) as table:
+        list_of_names = []
+        for row in table:
+            list_of_names.append(row.__getitem__(column))
+        assert list_of_names == result
 
 
 @pytest.mark.parametrize('table_name, value, result', [
@@ -49,5 +49,10 @@ def test_iter_method(table_name, column, result):
     ('books', 'Lenin', False),
 ])
 def test_contains_mathod(table_name, value, result):
-    table = TableData(path, table_name)
-    assert (value in table) == result
+    with TableData(path, table_name) as table:
+        assert (value in table) == result
+
+
+def test_2_instances():
+    with TableData(path, 'presidents') as presidents, TableData(path, 'books') as books:
+        assert len(presidents) == len(books)
