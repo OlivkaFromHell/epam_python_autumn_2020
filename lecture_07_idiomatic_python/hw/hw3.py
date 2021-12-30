@@ -19,11 +19,12 @@ Example:
      Return value should be "x wins!"
 
 """
+from itertools import chain
 from typing import List
 
 
 def tic_tac_toe_checker(board: List[List]) -> str:
-    board = [i for j in board for i in j]
+    board = chain(*board)
 
     def is_player_win(board: List, player: str):
         winning_combinations = (
@@ -46,9 +47,8 @@ def tic_tac_toe_checker(board: List[List]) -> str:
         return 'x wins!'
     if is_player_win(board, 'o'):
         return 'o wins!'
-    else:
-        if '-' in [i for j in board for i in j]:
-            return 'unfinished!'
+    if '-' in board:
+        return 'unfinished!'
 
     return 'draw!'
 
