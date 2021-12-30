@@ -159,8 +159,23 @@ def test_check_homework_with_same_result():
 
     old_teacher.check_homework(result)
     new_teacher.check_homework(result)
-    print(Teacher.homework_done)
-    assert Teacher.homework_done == {result.homework: [result]}
+    assert Teacher.homework_done == {result.homework: {result}}
+
+
+def test_check_homework_with_different_hwresult():
+    # (нужно гаранитровать остутствие повторяющихся результатов по каждому
+    # заданию)
+    Teacher.reset_results()
+    old_teacher = Teacher('Viktor', 'Smetanin')
+    lazy_student = Student('Ivan', 'Petrov')
+
+    oop_hw = old_teacher.create_homework('Learn OOP', 2)
+    result_old = lazy_student.do_homework(oop_hw, 'I have done this hw')
+    result_new = lazy_student.do_homework(oop_hw, "I've redone some ex")
+
+    old_teacher.check_homework(result_old)
+    old_teacher.check_homework(result_new)
+    assert Teacher.homework_done == {result_new.homework: {result_old, result_new}}
 
 
 def test_check_homework_with_different_students():
@@ -179,12 +194,10 @@ def test_check_homework_with_different_students():
 
     new_teacher.check_homework(result_1)
     new_teacher.check_homework(result_2)
-    print('\n', Teacher.homework_done)
     assert len(Teacher.homework_done[docs_hw]) == 2
 
 
 def test_homework_done_is_global_for_all_instances():
-
     teacher = Teacher('Viktor', 'Smetanin')
     student = Student('Ivan', 'Petrov')
 
@@ -199,7 +212,6 @@ def test_homework_done_is_global_for_all_instances():
 
 
 def test_teacher_reset_results():
-
     teacher = Teacher('Ivan', 'Smetanin')
     student = Student('Ivan', 'Petrov')
 

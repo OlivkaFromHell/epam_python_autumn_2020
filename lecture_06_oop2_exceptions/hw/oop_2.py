@@ -94,7 +94,7 @@ class HomeworkResult:
 
 
 class Teacher(User):
-    homework_done = defaultdict(list)
+    homework_done = defaultdict(set)
 
     @staticmethod
     def create_homework(text: str, deadline: int) -> Homework:
@@ -102,9 +102,8 @@ class Teacher(User):
 
     @classmethod
     def check_homework(cls, homeworkresult: HomeworkResult) -> bool:
-        list_of_homework = cls.homework_done[homeworkresult.homework]
-        if len(homeworkresult.solution) > 5 and homeworkresult not in list_of_homework:
-            cls.homework_done[homeworkresult.homework].append(homeworkresult)
+        if len(homeworkresult.solution) > 5:
+            cls.homework_done[homeworkresult.homework].add(homeworkresult)
             return True
         return False
 
@@ -113,7 +112,7 @@ class Teacher(User):
         if homework:
             del cls.homework_done[homework]
         else:
-            cls.homework_done = defaultdict(list)
+            cls.homework_done = defaultdict(set)
 
 
 if __name__ == '__main__':
