@@ -54,7 +54,7 @@ def test_student_homework_is_done(first_name, last_name, time, monkeypatch):
     assert student.do_homework(homework, solution).homework == homework
     assert student.do_homework(homework, solution).solution == solution
     assert student.do_homework(homework, solution).author == student
-    assert student.do_homework(homework, solution).created == homework.created
+    assert student.do_homework(homework, solution).created == datetime.datetime.now()
 
 
 @pytest.mark.parametrize('first_name, last_name, time', [('Ivan', 'Petrov', 5), ('Artur', 'Jack', 10)])
@@ -149,16 +149,38 @@ def test_check_homework_where_solution_less_5_symbols():
 def test_check_homework_with_same_result():
     # (нужно гаранитровать остутствие повторяющихся результатов по каждому
     # заданию)
+    Teacher.reset_results()
     new_teacher = Teacher('Ilya', 'Shadrin')
     old_teacher = Teacher('Viktor', 'Smetanin')
     lazy_student = Student('Ivan', 'Petrov')
 
-    oop_hw = old_teacher.create_homework('Learn OOP', 1)
+    oop_hw = old_teacher.create_homework('Learn OOP', 2)
     result = lazy_student.do_homework(oop_hw, 'I have done this hw')
 
     old_teacher.check_homework(result)
     new_teacher.check_homework(result)
-    assert Teacher.homework_done == {result.homework: result}
+    print(Teacher.homework_done)
+    assert Teacher.homework_done == {result.homework: [result]}
+
+
+def test_check_homework_with_different_students():
+    # проверка, что новая homework не сотрет старую
+    Teacher.reset_results()
+    new_teacher = Teacher('Ilya', 'Shadrin')
+    old_teacher = Teacher('Viktor', 'Smetanin')
+
+    lazy_student = Student('Ivan', 'Petrov')
+    good_student = Student('Sergei', 'Sokolov')
+
+    docs_hw = old_teacher.create_homework('Read docs', 5)
+
+    result_1 = good_student.do_homework(docs_hw, 'I have done this hw too')
+    result_2 = lazy_student.do_homework(docs_hw, 'Homework is done')
+
+    new_teacher.check_homework(result_1)
+    new_teacher.check_homework(result_2)
+    print('\n', Teacher.homework_done)
+    assert len(Teacher.homework_done[docs_hw]) == 2
 
 
 def test_homework_done_is_global_for_all_instances():

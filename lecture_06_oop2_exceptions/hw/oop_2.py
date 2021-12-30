@@ -68,31 +68,33 @@ class Homework:
         return datetime.datetime.now() - self.deadline < self.created
 
 
-class Student:
-
+class User:
     def __init__(self, first_name: str, last_name: str):
         self.first_name = first_name
         self.last_name = last_name
 
+
+class Student(User):
+
     def do_homework(self, homework: Homework, solution: str):
         if homework.is_active():
-            return HomeworkResult(homework, solution, author=self, created=homework.created)
+            return HomeworkResult(self, homework, solution)
         raise DeadlineError('You are late')
 
 
 class HomeworkResult:
 
-    def __init__(self, homework: Homework, solution: str, author: Student, created: datetime.datetime):
+    def __init__(self, author: Student, homework: Homework, solution: str):
         if not isinstance(homework, Homework):
             raise TypeError('You gave a not Homework object')
+        self.author = author
         self.homework = homework
         self.solution = solution
-        self.author = author
-        self.created = created
+        self.created = datetime.datetime.now()
 
 
-class Teacher(Student):
-    homework_done = defaultdict(HomeworkResult)
+class Teacher(User):
+    homework_done = defaultdict(list)
 
     @staticmethod
     def create_homework(text: str, deadline: int) -> Homework:
@@ -100,8 +102,9 @@ class Teacher(Student):
 
     @classmethod
     def check_homework(cls, homeworkresult: HomeworkResult) -> bool:
-        if len(homeworkresult.solution) > 5:
-            cls.homework_done[homeworkresult.homework] = homeworkresult
+        list_of_homework = cls.homework_done[homeworkresult.homework]
+        if len(homeworkresult.solution) > 5 and homeworkresult not in list_of_homework:
+            cls.homework_done[homeworkresult.homework].append(homeworkresult)
             return True
         return False
 
@@ -110,7 +113,7 @@ class Teacher(Student):
         if homework:
             del cls.homework_done[homework]
         else:
-            cls.homework_done = defaultdict(HomeworkResult)
+            cls.homework_done = defaultdict(list)
 
 
 if __name__ == '__main__':
@@ -140,8 +143,3 @@ if __name__ == '__main__':
 
     opp_teacher.check_homework(result_2)
     opp_teacher.check_homework(result_3)
-
-    print(Teacher.homework_done[oop_hw])
-    print(Teacher.homework_done)
-    Teacher.reset_results()
-    print(Teacher.homework_done)

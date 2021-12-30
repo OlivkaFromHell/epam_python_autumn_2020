@@ -67,8 +67,8 @@ def test_instance_get_created_instances(data):
 
 def test_user_instance_get_created_instances(data):
     user_class, _, _, _, _, _ = data
-    user, _, _ = user_class(), user_class(), user_class()
-    assert user.get_created_instances() == 3
+    _, _, _ = user_class(), user_class(), user_class()
+    assert user_class.get_created_instances() == 3
 
 
 def test_subclass_instance_get_created_instances(data):
@@ -100,6 +100,7 @@ def test_subuser_instance_reset_instances_counter(data):
     sub_user = sub_user_class()
     assert sub_user.reset_instances_counter() == 1
     assert sub_user.get_created_instances() == 0
+    assert user_class.get_created_instances() == 3
 
 
 def test_advisor_instance_reset_instances_counter(data):
