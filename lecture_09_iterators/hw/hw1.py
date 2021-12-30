@@ -18,20 +18,30 @@ from pathlib import Path
 from typing import Iterator, List, Union
 
 
-def merge_sorted_files(file_list: List[Union[Path, str]]) -> Iterator:
+def data_generator(list_of_numbers: list) -> Iterator:
+    while list_of_numbers:
+        first_elems = [j[0] for j in list_of_numbers]
+        to_return = min(first_elems)
+        del list_of_numbers[first_elems.index(to_return)][0]
 
+        # if list is empty -> delete list form list_of_numbers
+        if not list_of_numbers[first_elems.index(to_return)]:
+            del list_of_numbers[first_elems.index(to_return)]
+
+        yield to_return
+
+
+def merge_sorted_files(file_list: List[Union[Path, str]]) -> Iterator:
     file_contest = [
-        Path(__file__).parent.joinpath(path).read_text().split('\n')
+        list(map(
+            int, Path(__file__).parent.joinpath(path)
+            .read_text().split('\n')))
         for path in file_list
     ]
 
-    merged_lists = []
-    for lst in file_contest:
-        lst = list(map(int, lst))
-        merged_lists.extend(lst)
-
-    merged_lists.sort()
-    return iter(merged_lists)
+    generators = data_generator(file_contest)
+    for num in generators:
+        yield num
 
 
 if __name__ == '__main__':
