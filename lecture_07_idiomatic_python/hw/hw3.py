@@ -23,48 +23,24 @@ from typing import List
 
 
 def tic_tac_toe_checker(board: List[List]) -> str:
-    def is_player_win(board: List[List], player: str):
-        n = len(board)
+    board = [i for j in board for i in j]
 
-        # check rows
-        for i in range(n):
-            win = True
-            for j in range(n):
-                if board[i][j] != player:
-                    win = False
-                    break
-            if win:
+    def is_player_win(board: List, player: str):
+        winning_combinations = (
+            (0, 3, 6),
+            (1, 4, 7),
+            (2, 5, 8),
+            (0, 1, 2),
+            (3, 4, 5),
+            (6, 7, 8),
+            (0, 4, 8),
+            (2, 4, 6)
+        )
+
+        for position in winning_combinations:
+            if board[position[0]] == board[position[1]] == board[position[2]] == player:
                 return True
-
-        # check columns
-        for i in range(n):
-            win = True
-            for j in range(n):
-                if board[j][i] != player:
-                    win = False
-                    break
-            if win:
-                return True
-
-        # check main diagonal
-        win = True
-        for i in range(n):
-            if board[i][i] != player:
-                win = False
-                break
-
-        if win:
-            return True
-
-        # check side diagonal
-        win = True
-        for i in range(n):
-            if board[i][n - i - 1] != player:
-                win = False
-                break
-
-        if win:
-            return True
+        return False
 
     if is_player_win(board, 'x'):
         return 'x wins!'
@@ -78,6 +54,6 @@ def tic_tac_toe_checker(board: List[List]) -> str:
 
 
 if __name__ == '__main__':
-    print(tic_tac_toe_checker([['o', 'x', 'o'],
+    print(tic_tac_toe_checker([['x', 'x', 'o'],
                                ['x', 'x', 'o'],
-                               ['x', 'o', 'x']]))
+                               ['o', 'o', 'x']]))
