@@ -24,7 +24,7 @@ from typing import List
 
 
 def tic_tac_toe_checker(board: List[List]) -> str:
-    board = chain(*board)
+    board = list(chain(*board))
 
     def is_player_win(board: List, player: str):
         winning_combinations = (
