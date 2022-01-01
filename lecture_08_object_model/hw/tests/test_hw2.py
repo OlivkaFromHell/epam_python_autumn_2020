@@ -1,4 +1,5 @@
 import os
+import sqlite3
 
 import pytest
 from hw.hw2 import TableData
@@ -45,7 +46,7 @@ def test_iter_method(table_name, column, result):
     ('presidents', 'Putin', False),
     ('books', '1984', True),
     ('books', '100', False),
-    ('books', 'Orwell', True),
+    ('books', 'Farenheit 451', True),
     ('books', 'Lenin', False),
 ])
 def test_contains_mathod(table_name, value, result):
@@ -56,3 +57,15 @@ def test_contains_mathod(table_name, value, result):
 def test_2_instances():
     with TableData(path, 'presidents') as presidents, TableData(path, 'books') as books:
         assert len(presidents) == len(books)
+
+
+def test_check_injection_avoidance():
+    with TableData(path, 'books') as table:
+        table['Farenheit 451; DROP DATABASE']
+        assert table['Farenheit 451'] == {'name': 'Farenheit 451', 'author': 'Bradbury'}
+
+
+def test_check_valid_table_name():
+    with pytest.raises(sqlite3.OperationalError):
+        with TableData(path, 'non_existing_table') as table:
+            assert table['Farenheit 451'] == {'name': 'Farenheit 451', 'author': 'Bradbury'}

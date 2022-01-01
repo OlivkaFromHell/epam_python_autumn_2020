@@ -6,14 +6,18 @@ class TableData:
         self.table_name = table_name
 
         self._conn = sqlite3.connect(database_name)
+
         self._cursor = self._conn.cursor()
 
         # get table column names to use them as dict keys
-        self._cursor.execute(f"SELECT name FROM PRAGMA_TABLE_INFO('{self.table_name}')")
-        columns = []
-        for column in self.cursor.fetchall():
-            columns.append(column[0])
-        self.columns = columns
+        try:
+            self._cursor.execute(f"SELECT name FROM PRAGMA_TABLE_INFO('{self.table_name}')")
+            columns = []
+            for column in self._cursor.fetchall():
+                columns.append(column[0])
+            self.columns = columns
+        except sqlite3.OperationalError as err:
+            raise err
 
     def __enter__(self):
         return self
@@ -33,10 +37,9 @@ class TableData:
         self.connection.close()
 
     def __contains__(self, item):
-        for row in self:
-            values = list(row.values())
-            if item in values:
-                return True
+        self._cursor.execute(f"SELECT * FROM {self.table_name} WHERE name=?", (item,))
+        if self.cursor.fetchone() is not None:
+            return True
         return False
 
     def __len__(self):
@@ -54,13 +57,16 @@ class TableData:
     def __getitem__(self, item):
 
         if isinstance(item, str):
-            self._cursor.execute(f"SELECT * FROM {self.table_name} WHERE name=:name", f'{{name:{item}}}')
+            self._cursor.execute(f"SELECT * FROM {self.table_name} WHERE name=?", (item,))
             response = {}
             row = self.cursor.fetchone()
 
-            for key, value in zip(self.columns, row):
-                response[key] = value
-            return response
+            if row is not None:
+                for key, value in zip(self.columns, row):
+                    response[key] = value
+                return response
+            else:
+                return
 
         raise KeyError('item object should be string')
 
@@ -68,12 +74,11 @@ class TableData:
 if __name__ == '__main__':
     example = TableData('example.sqlite', 'books')
 
-    #
     # print(len(example))
 
     # for i in example:
     #     print(i['author'])
 
-    print('1984' in example)
+    # print('1984' in example)
 
-    # print(example['Farenheit 451'])
+    print(example['Farenheit 451'])

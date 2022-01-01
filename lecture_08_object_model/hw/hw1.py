@@ -20,5 +20,5 @@ class KeyValueStorage(dict):
                 else:
                     raise ValueError("Key values should be string type")
 
-    # def __getattr__(self, name):
-    #     return self.__getattribute__(name)
+    def __getattr__(self, name):
+        return self.__getattribute__(name)
