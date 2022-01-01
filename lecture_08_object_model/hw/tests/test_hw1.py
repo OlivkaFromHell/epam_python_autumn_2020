@@ -59,11 +59,21 @@ def test_attribute_is_built_in(opened_file, key, value):
 
 
 @pytest.mark.parametrize("opened_file", [
-    '2=kek\n',
-    '-3=top\n',
-    'name value=9001\n',
+    '2=kek\n'
+    '-3=top\n'
+    'name value=9001\n'
     'sys-name=9001\n',
 ], indirect=True)
 def test_key_is_digit(opened_file):
     with pytest.raises(ValueError):
         KeyValueStorage(opened_file)
+
+
+@pytest.mark.parametrize("opened_file", [
+    'keys=54\n'
+    'items=MY_ITEMS\n',
+], indirect=True)
+def test_custom_case(opened_file):
+    storage = KeyValueStorage(opened_file)
+    print(storage.__getattr__('keys'))
+    assert storage.__getattr__('keys') != 54
