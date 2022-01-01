@@ -17,10 +17,7 @@ class Suppresor:
         pass
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if isinstance(exc_val, self.exception):
-            return True
-        else:
-            return False
+        return isinstance(exc_val, self.exception)
 
 
 @contextmanager

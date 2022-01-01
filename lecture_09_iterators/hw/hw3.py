@@ -20,17 +20,14 @@ def universal_file_counter(
 ) -> int:
 
     counter = 0
-    file_contents = [
-        path.read_text()
-        for path in Path(dir_path).rglob(f'*.{file_extension}')
-    ]
 
-    if isinstance(tokenizer, collections.abc.Callable):
-        for file_text in file_contents:
-            counter += len(tokenizer(file_text))
-    elif tokenizer is None:
-        for file_text in file_contents:
-            counter += file_text.count('\n') + 1
+    for path in Path(dir_path).rglob(f'*.{file_extension}'):
+        with open(path) as f:
+            text = f.read()
+            if isinstance(tokenizer, collections.abc.Callable):
+                counter += len(tokenizer(text))
+            elif tokenizer is None:
+                counter += text.count('\n') + 1
 
     return counter
 
