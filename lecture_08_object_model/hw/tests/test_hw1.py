@@ -1,5 +1,5 @@
 import pytest
-from hw.hw1 import KeyValueStorage
+from hw8.hw1 import KeyValueStorage
 
 
 @pytest.fixture
@@ -40,7 +40,7 @@ def test_accessible_as_collection(opened_file, key, value):
 ])
 def test_accessible_as_attribute(opened_file, key, value):
     storage = KeyValueStorage(opened_file)
-    assert storage.__getattr__(key) == value
+    assert getattr(storage, key) == value
 
 
 @pytest.mark.parametrize("opened_file", [
@@ -55,7 +55,7 @@ def test_accessible_as_attribute(opened_file, key, value):
 ])
 def test_attribute_is_built_in(opened_file, key, value):
     storage = KeyValueStorage(opened_file)
-    assert storage.__getattr__(key) != value
+    assert getattr(storage, key) != value
 
 
 @pytest.mark.parametrize("opened_file", [
@@ -75,5 +75,4 @@ def test_key_is_digit(opened_file):
 ], indirect=True)
 def test_custom_case(opened_file):
     storage = KeyValueStorage(opened_file)
-    print(storage.__getattr__('keys'))
-    assert storage.__getattr__('keys') != 54
+    assert getattr(storage, 'keys') != 54

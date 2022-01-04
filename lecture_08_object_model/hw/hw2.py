@@ -56,19 +56,19 @@ class TableData:
 
     def __getitem__(self, item):
 
-        if isinstance(item, str):
-            self._cursor.execute(f"SELECT * FROM {self.table_name} WHERE name=?", (item,))
-            response = {}
-            row = self.cursor.fetchone()
+        if not isinstance(item, str):
+            raise KeyError('item object should be string')
 
-            if row is not None:
-                for key, value in zip(self.columns, row):
-                    response[key] = value
-                return response
-            else:
-                return
+        self._cursor.execute(f"SELECT * FROM {self.table_name} WHERE name=?", (item,))
+        response = {}
+        row = self.cursor.fetchone()
 
-        raise KeyError('item object should be string')
+        if row is not None:
+            for key, value in zip(self.columns, row):
+                response[key] = value
+            return response
+        else:
+            return
 
 
 if __name__ == '__main__':
