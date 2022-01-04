@@ -1,4 +1,6 @@
 name=kek
 last_name=top
 power=9001
-song=shadilay
+song_name=shadilay
+__doc__=ti
+items=lol
