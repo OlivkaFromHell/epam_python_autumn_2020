@@ -43,3 +43,13 @@ def test_positive_case_2(opened_files, result):
 ])
 def test_positive_case_3(opened_files, result):
     assert list(merge_sorted_files([*opened_files])) == result
+
+
+@pytest.mark.parametrize("opened_files", [
+    ('1\n5\n9', '2\n4', '3'),
+], indirect=True)
+@pytest.mark.parametrize('result', [
+    [1, 2, 3, 4, 5, 9],
+])
+def test_files_with_different_length(opened_files, result):
+    assert list(merge_sorted_files([*opened_files])) == result

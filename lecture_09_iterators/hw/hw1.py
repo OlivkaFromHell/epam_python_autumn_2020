@@ -18,24 +18,46 @@ from pathlib import Path
 from typing import Iterator, List, Union
 
 
-def data_generator(list_of_numbers: list) -> Iterator:
-    while list_of_numbers:
-        first_elems = [j[0] for j in list_of_numbers]
-        to_return = min(first_elems)
-        del list_of_numbers[first_elems.index(to_return)][0]
+def data_generator(list_of_files: list) -> Iterator:
 
-        # if list is empty -> delete list form list_of_numbers
-        if not list_of_numbers[first_elems.index(to_return)]:
-            del list_of_numbers[first_elems.index(to_return)]
+    rows = {}  # dict with last line from file
+    files = list(map(open, list_of_files))
+    files_dict = {}  # dict with links to file
 
-        yield to_return
+    for index, file in enumerate(files):
+        rows[index] = None
+        files_dict[index] = file
+
+    while files_dict:
+        to_delete = None
+
+        for file in files_dict:
+            if rows[file] is None:  # read new line
+                number = files_dict[file].readline().strip()
+
+                # if this is the end of the file, mark it for delete
+                if number == '':
+                    # if we delete link to file from files_dict here, we will get an error
+                    to_delete = file
+                else:
+                    rows[file] = int(number)
+
+        # delete link to file from dict
+        if to_delete is not None:
+            del rows[to_delete]
+            files_dict[to_delete].close()
+            del files_dict[to_delete]
+
+        if rows:
+            key_file = min(rows, key=rows.get)
+            to_return = rows[key_file]
+            rows[key_file] = None
+            yield to_return
 
 
 def merge_sorted_files(file_list: List[Union[Path, str]]) -> Iterator:
     file_contest = [
-        list(map(
-            int, Path(__file__).parent.joinpath(path)
-            .read_text().split('\n')))
+        Path(__file__).parent.joinpath(path)
         for path in file_list
     ]
 
